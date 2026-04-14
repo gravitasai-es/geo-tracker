@@ -5,14 +5,11 @@ Corre 20 consultas (queries.json) contra perplexity.ai y guarda las fuentes
 citadas en results/YYYY-MM-DD.json. Marca cuando Gravitas AI aparece.
 
 Ejecución:
-    python somv.py               # una pasada completa sobre queries.json
-    python somv.py --query "foo" # una sola consulta ad-hoc
+    python somv.py               # pasada completa sobre queries.json
+    python somv.py --query "foo" # consulta ad-hoc
 
-Se evita autenticación: accede a la interfaz pública de Perplexity con un
-navegador headless parcheado (nodriver) para saltarse detección de Cloudflare.
-
-Si Perplexity introduce bloqueos más fuertes, migramos a su Sonar API (~$0,40/mes
-en nuestro volumen). El esquema del JSON de salida no cambiaría.
+Implementación con Playwright (Chromium headless). Si Perplexity introduce
+bloqueos anti-bot más fuertes en el futuro, migrar a su Sonar API.
 """
 
 from __future__ import annotations
@@ -20,32 +17,36 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
-import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-import nodriver as uc
 from bs4 import BeautifulSoup
+from playwright.async_api import (  # type: ignore[import-not-found]
+    TimeoutError as PlaywrightTimeoutError,
+    async_playwright,
+)
 
 BASE_DIR = Path(__file__).parent
 QUERIES_FILE = BASE_DIR / "queries.json"
 RESULTS_DIR = BASE_DIR / "results"
 TARGET_DOMAIN = "gravitasai.es"
-RELATED_DOMAINS = {
+RELATED_HOSTS = {
     "gravitasai.es",
     "quicksit.io",
-    "github.com/gravitasai-es",
+    "github.com",  # nuestra org vive ahí
 }
 PERPLEXITY_URL = "https://www.perplexity.ai/"
 QUERY_SETTLE_SECONDS = 18
-BETWEEN_QUERIES_SECONDS = 6
+BETWEEN_QUERIES_SECONDS = 5
+USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+)
 
 
 def extract_domains(html: str) -> list[str]:
-    """Parsea el DOM renderizado de Perplexity y devuelve los dominios
-    únicos presentes en los enlaces externos del bloque de fuentes."""
     soup = BeautifulSoup(html, "html.parser")
     domains: list[str] = []
     seen: set[str] = set()
@@ -57,9 +58,7 @@ def extract_domains(html: str) -> list[str]:
             host = urlparse(href).netloc.lower()
         except ValueError:
             continue
-        if not host:
-            continue
-        if host.endswith("perplexity.ai"):
+        if not host or host.endswith("perplexity.ai"):
             continue
         host = host.removeprefix("www.")
         if host in seen:
@@ -69,69 +68,86 @@ def extract_domains(html: str) -> list[str]:
     return domains
 
 
+def gravitas_cited(domains: list[str]) -> bool:
+    for d in domains:
+        if d == TARGET_DOMAIN or d.endswith(f".{TARGET_DOMAIN}"):
+            return True
+    return False
+
+
 async def run_query(page, query: str) -> list[str]:
-    await page.get(PERPLEXITY_URL)
-    await asyncio.sleep(4)
-    textarea = await page.find("textarea", timeout=15)
-    if textarea is None:
-        raise RuntimeError("Perplexity textarea not found")
-    await textarea.send_keys(query)
-    await textarea.send_keys("\n")
-    await asyncio.sleep(QUERY_SETTLE_SECONDS)
-    html = await page.get_content()
+    await page.goto(PERPLEXITY_URL, wait_until="domcontentloaded", timeout=30000)
+    await page.wait_for_timeout(3000)
+
+    textarea = page.locator("textarea").first
+    await textarea.wait_for(state="visible", timeout=15000)
+    await textarea.fill(query)
+    await textarea.press("Enter")
+
+    # Esperar a que Perplexity sintetice la respuesta y renderice fuentes.
+    await page.wait_for_timeout(QUERY_SETTLE_SECONDS * 1000)
+    html = await page.content()
     return extract_domains(html)
 
 
-def gravitas_cited(domains: list[str]) -> bool:
-    return any(
-        d == TARGET_DOMAIN or d.endswith(f".{TARGET_DOMAIN}") or d in RELATED_DOMAINS
-        for d in domains
-    )
-
-
 async def main_loop(queries: list[dict]) -> list[dict]:
-    browser = await uc.start(headless=True, no_sandbox=True)
-    try:
-        page = await browser.get("about:blank")
-        results = []
+    results: list[dict] = []
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(
+            headless=True,
+            args=[
+                "--no-sandbox",
+                "--disable-blink-features=AutomationControlled",
+                "--disable-dev-shm-usage",
+            ],
+        )
+        context = await browser.new_context(
+            user_agent=USER_AGENT,
+            locale="es-ES",
+            viewport={"width": 1440, "height": 900},
+        )
+        page = await context.new_page()
+
         for idx, item in enumerate(queries, 1):
             q = item["query"]
             print(f"[{idx:>2}/{len(queries)}] {q}", flush=True)
             try:
                 domains = await run_query(page, q)
                 cited = gravitas_cited(domains)
+                position = next(
+                    (
+                        i
+                        for i, d in enumerate(domains, 1)
+                        if d == TARGET_DOMAIN or d.endswith(f".{TARGET_DOMAIN}")
+                    ),
+                    None,
+                )
                 results.append(
                     {
                         "query": q,
                         "category": item.get("category"),
                         "domains": domains,
                         "gravitas_cited": cited,
-                        "position": next(
-                            (
-                                i
-                                for i, d in enumerate(domains, 1)
-                                if d == TARGET_DOMAIN
-                                or d.endswith(f".{TARGET_DOMAIN}")
-                            ),
-                            None,
-                        ),
+                        "position": position,
                     }
                 )
                 marker = "HIT" if cited else "·"
                 print(f"      {marker} {len(domains)} dominios", flush=True)
-            except Exception as exc:  # noqa: BLE001 — log and continue
+            except PlaywrightTimeoutError as exc:
+                print(f"      ! timeout: {exc}", flush=True)
+                results.append(
+                    {"query": q, "category": item.get("category"), "error": f"timeout: {exc}"}
+                )
+            except Exception as exc:  # noqa: BLE001
                 print(f"      ! error: {exc}", flush=True)
                 results.append(
-                    {
-                        "query": q,
-                        "category": item.get("category"),
-                        "error": str(exc),
-                    }
+                    {"query": q, "category": item.get("category"), "error": str(exc)}
                 )
-            await asyncio.sleep(BETWEEN_QUERIES_SECONDS)
-        return results
-    finally:
-        await browser.stop()
+            await page.wait_for_timeout(BETWEEN_QUERIES_SECONDS * 1000)
+
+        await context.close()
+        await browser.close()
+    return results
 
 
 def summarize(results: list[dict]) -> dict:
@@ -154,7 +170,7 @@ def summarize(results: list[dict]) -> dict:
 
 async def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--query", help="Ejecuta solo esta consulta (útil para debug)")
+    parser.add_argument("--query", help="Ejecuta solo esta consulta (debug)")
     args = parser.parse_args()
 
     queries = (
@@ -178,11 +194,15 @@ async def main() -> None:
 
     out = RESULTS_DIR / f"{stamp}.json"
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
-    print(f"\nResumen: {summary['gravitas_hits']}/{summary['queries_total']} citas ({summary['citation_rate']*100:.1f}%)")
+
+    print(
+        f"\nResumen: {summary['gravitas_hits']}/{summary['queries_total']} citas "
+        f"({summary['citation_rate']*100:.1f}%)"
+    )
     print(f"Guardado: {out.relative_to(BASE_DIR)}")
 
 
 if __name__ == "__main__":
-    if sys.platform.startswith("win") and sys.version_info >= (3, 8):
+    if sys.platform.startswith("win"):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(main())

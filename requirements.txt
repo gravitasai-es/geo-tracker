@@ -1,2 +1,2 @@
-nodriver>=0.42
+playwright>=1.45
 beautifulsoup4>=4.12
