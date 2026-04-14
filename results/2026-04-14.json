@@ -1,0 +1,18 @@
+{
+  "date": "2026-04-14",
+  "target_domain": "gravitasai.es",
+  "summary": {
+    "queries_total": 1,
+    "gravitas_hits": 0,
+    "citation_rate": 0.0,
+    "errors": 1,
+    "top_cited_domains": []
+  },
+  "results": [
+    {
+      "query": "qué es Gravitas AI",
+      "category": "ad-hoc",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    }
+  ]
+}
