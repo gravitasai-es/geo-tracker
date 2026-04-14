@@ -1,0 +1,22 @@
+[
+  { "query": "recepcionista virtual IA para cl\u00ednicas dentales espa\u00f1a", "category": "transaccional-recepcion" },
+  { "query": "recepcionista virtual IA para talleres mec\u00e1nicos", "category": "transaccional-recepcion" },
+  { "query": "recepcionista virtual IA para peluquer\u00edas", "category": "transaccional-recepcion" },
+  { "query": "agente de voz con IA en espa\u00f1ol para atender llamadas", "category": "transaccional-recepcion" },
+  { "query": "mejor gestor de reservas para restaurantes sin comisi\u00f3n 2026", "category": "transaccional-reservas" },
+  { "query": "alternativas a TheFork para restaurantes 2026", "category": "competitiva-reservas" },
+  { "query": "alternativas a CoverManager para restaurantes", "category": "competitiva-reservas" },
+  { "query": "automatizaci\u00f3n de procesos para pymes en espa\u00f1a", "category": "transaccional-automatizacion" },
+  { "query": "c\u00f3mo integrar WhatsApp Business con CRM y calendario", "category": "long-tail-automatizacion" },
+  { "query": "software a medida con IA para pyme espa\u00f1ola", "category": "transaccional-software" },
+  { "query": "desarrollo web optimizado para ChatGPT y Perplexity", "category": "long-tail-geo" },
+  { "query": "herramientas de inteligencia artificial para pymes en espa\u00f1a", "category": "generica" },
+  { "query": "qu\u00e9 es Gravitas AI", "category": "entidad-marca" },
+  { "query": "Gravitas AI opiniones", "category": "entidad-marca" },
+  { "query": "coste recepcionista IA vs secretaria tradicional", "category": "comparativa" },
+  { "query": "integrar Holded con WhatsApp Business y CRM", "category": "long-tail-herramientas" },
+  { "query": "n8n vs Make vs Zapier para automatizar pyme", "category": "comparativa" },
+  { "query": "agente de voz IA atender llamadas cl\u00ednica 24 horas", "category": "transaccional-recepcion" },
+  { "query": "consultora IA para negocios de servicios en espa\u00f1a", "category": "generica" },
+  { "query": "coste real gestor de reservas restaurante con IA", "category": "long-tail-reservas" }
+]
