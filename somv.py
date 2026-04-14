@@ -90,7 +90,7 @@ def gravitas_cited(domains: list[str]) -> bool:
 
 
 async def main_loop(queries: list[dict]) -> list[dict]:
-    browser = await uc.start(headless=True, sandbox=False)
+    browser = await uc.start(headless=True, no_sandbox=True)
     try:
         page = await browser.get("about:blank")
         results = []

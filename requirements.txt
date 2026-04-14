@@ -1,2 +1,2 @@
-nodriver==0.39
-beautifulsoup4==4.12.3
+nodriver>=0.42
+beautifulsoup4>=4.12
