@@ -1,0 +1,113 @@
+{
+  "date": "2026-05-04",
+  "target_domain": "gravitasai.es",
+  "summary": {
+    "queries_total": 20,
+    "gravitas_hits": 0,
+    "citation_rate": 0.0,
+    "errors": 20,
+    "top_cited_domains": []
+  },
+  "results": [
+    {
+      "query": "recepcionista virtual IA para clínicas dentales españa",
+      "category": "transaccional-recepcion",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "recepcionista virtual IA para talleres mecánicos",
+      "category": "transaccional-recepcion",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "recepcionista virtual IA para peluquerías",
+      "category": "transaccional-recepcion",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "agente de voz con IA en español para atender llamadas",
+      "category": "transaccional-recepcion",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "mejor gestor de reservas para restaurantes sin comisión 2026",
+      "category": "transaccional-reservas",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "alternativas a TheFork para restaurantes 2026",
+      "category": "competitiva-reservas",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "alternativas a CoverManager para restaurantes",
+      "category": "competitiva-reservas",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "automatización de procesos para pymes en españa",
+      "category": "transaccional-automatizacion",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "cómo integrar WhatsApp Business con CRM y calendario",
+      "category": "long-tail-automatizacion",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "software a medida con IA para pyme española",
+      "category": "transaccional-software",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "desarrollo web optimizado para ChatGPT y Perplexity",
+      "category": "long-tail-geo",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "herramientas de inteligencia artificial para pymes en españa",
+      "category": "generica",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "qué es Gravitas AI",
+      "category": "entidad-marca",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "Gravitas AI opiniones",
+      "category": "entidad-marca",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "coste recepcionista IA vs secretaria tradicional",
+      "category": "comparativa",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "integrar Holded con WhatsApp Business y CRM",
+      "category": "long-tail-herramientas",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "n8n vs Make vs Zapier para automatizar pyme",
+      "category": "comparativa",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "agente de voz IA atender llamadas clínica 24 horas",
+      "category": "transaccional-recepcion",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "consultora IA para negocios de servicios en españa",
+      "category": "generica",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    },
+    {
+      "query": "coste real gestor de reservas restaurante con IA",
+      "category": "long-tail-reservas",
+      "error": "timeout: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"textarea\").first to be visible\n"
+    }
+  ]
+}
